@@ -38,7 +38,7 @@ spec:
       hostIPC: true
       containers:
       - name: function-1
-        image: hydroproject/cloudburst-gpu
+        image: vsreekanti/cloudburst-gpu-ps
         imagePullPolicy: Always
         resources:
           limits:
@@ -56,20 +56,20 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: ANNA_REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: EXECUTOR_TYPE
           value: "GPU"
         volumeMounts:
         - mountPath: /requests
           name: ipc
       - name: function-2
-        image: hydroproject/cloudburst
+        image: vsreekanti/cloudburst-ps
         imagePullPolicy: Always
         resources:
           limits:
@@ -86,18 +86,18 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: ANNA_REPO_BRANCH
-          value: master
+          value: osdi-experiments
         volumeMounts:
         - mountPath: /requests
           name: ipc
       - name: function-3
-        image: hydroproject/cloudburst
+        image: vsreekanti/cloudburst-ps
         imagePullPolicy: Always
         resources:
           limits:
@@ -114,13 +114,13 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: ANNA_REPO_BRANCH
-          value: master
+          value: osdi-experiments
         volumeMounts:
         - mountPath: /requests
           name: ipc

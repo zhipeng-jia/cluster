@@ -83,11 +83,11 @@ class DefaultHydroPolicy(BaseHydroPolicy):
                                                        avg_latency, thruput,
                                                        num_replicas))
 
-            if call_count > thruput * .7:
+            if call_count > thruput * .5:
                 # First, we compare the throughput of the system for a function
                 # to the number of calls for it. We add replicas if the number
                 # of calls exceeds a percentage of the throughput.
-                increase = (math.ceil(call_count / (thruput * .7))
+                increase = (math.ceil(call_count / (thruput * .5))
                             * num_replicas) - num_replicas + 1
                 logging.info(('Function %s: %d calls in recent period exceeds'
                               + ' threshold. Adding %d replicas.') %
@@ -96,16 +96,17 @@ class DefaultHydroPolicy(BaseHydroPolicy):
                                                self.function_locations,
                                                executors)
             elif call_count < thruput * .1:
+                pass
                 # Similarly, we check to see if the call count is significantly
                 # below the achieved throughput -- we then remove replicas.
 
                 # cgwu: sometimes the call count is misleading because we haven't gathered the count across all executors
-                decrease = math.ceil((call_count / thruput) * num_replicas) + 1
-                logging.info(('Function %s: %d calls in recent period under ' +
-                              'threshold. Reducing to %d replicas.') %
-                             (fname, call_count, decrease))
-                self.scaler.dereplicate_function(fname, decrease,
-                                                 self.function_locations)
+                # decrease = math.ceil((call_count / thruput) * num_replicas) + 1
+                # logging.info(('Function %s: %d calls in recent period under ' +
+                #               'threshold. Reducing to %d replicas.') %
+                #              (fname, call_count, decrease))
+                # self.scaler.dereplicate_function(fname, decrease,
+                #                                  self.function_locations)
             elif fname in self.latency_history:
                 # Next, we look at historical perceived latency of requests
                 # -- if the request is spending more time in the system than it
@@ -113,6 +114,7 @@ class DefaultHydroPolicy(BaseHydroPolicy):
                 ratio = avg_latency / historical
 
                 if ratio > self.max_latency_deviation:
+                    ratio *= len(self.function_locations[fname])
                     num_replicas = (math.ceil(ratio) -
                                     len(self.function_locations[fname]) + 1)
                     logging.info(('Function %s: recent latency average (%.4f) '

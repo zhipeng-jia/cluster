@@ -43,10 +43,10 @@ spec:
         - name: ROLE
           value: scheduler
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: ANNA_REPO_BRANCH
-          value: master
+          value: osdi-experiments
