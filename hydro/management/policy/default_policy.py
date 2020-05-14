@@ -23,6 +23,7 @@ from hydro.management.util import (
     NUM_EXEC_THREADS,
     send_message
 )
+from hydro.shared.proto.internal_pb2 import CPU, GPU
 
 EXECUTOR_REPORT_PERIOD = 5
 
@@ -58,7 +59,14 @@ class DefaultHydroPolicy(BaseHydroPolicy):
 
                 self.function_locations[fname].add(key)
 
-        executors = set(executor_statuses.keys())
+        cpu_executors = set()
+        gpu_executors = set()
+        for key in executor_statuses:
+            status = executor_statuses[key]
+            if status.type == CPU:
+                cpu_executors.add(key)
+            else:
+                gpu_executors.add(key)
 
         # Evaluate the policy decisions for each function that is reporting
         # metadata.
@@ -87,20 +95,21 @@ class DefaultHydroPolicy(BaseHydroPolicy):
                 # First, we compare the throughput of the system for a function
                 # to the number of calls for it. We add replicas if the number
                 # of calls exceeds a percentage of the throughput.
-                increase = (math.ceil(call_count / (thruput * .5))
+                increase = (math.ceil(call_count / (thruput * .6))
                             * num_replicas) - num_replicas + 1
                 logging.info(('Function %s: %d calls in recent period exceeds'
                               + ' threshold. Adding %d replicas.') %
                              (fname, call_count, increase))
                 self.scaler.replicate_function(fname, increase,
                                                self.function_locations,
-                                               executors)
+                                               cpu_executors, gpu_executors)
             elif call_count < thruput * .1:
                 pass
                 # Similarly, we check to see if the call count is significantly
                 # below the achieved throughput -- we then remove replicas.
 
-                # cgwu: sometimes the call count is misleading because we haven't gathered the count across all executors
+                # cgwu: sometimes the call count is misleading because we
+                # haven't gathered the count across all executors
                 # decrease = math.ceil((call_count / thruput) * num_replicas) + 1
                 # logging.info(('Function %s: %d calls in recent period under ' +
                 #               'threshold. Reducing to %d replicas.') %
@@ -124,7 +133,7 @@ class DefaultHydroPolicy(BaseHydroPolicy):
 
                     self.scaler.replicate_function(fname, num_replicas,
                                                    self.function_locations,
-                                                   executors)
+                                                   cpu_executors, gpu_executors)
 
             # Recalculates total runtime for this function and the historical
             # call count and updates latency history metadata.

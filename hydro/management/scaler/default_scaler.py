@@ -1,4 +1,4 @@
-#  Copyright 2019 U.C. Berkeley RISE Lab
+#  Copyright 14gc19 U.C. Berkeley RISE Lab
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -35,23 +35,44 @@ class DefaultScaler(BaseScaler):
         self.pin_accept_socket = pin_accept_socket
 
     def replicate_function(self, fname, num_replicas, function_locations,
-                           executors):
+                           cpu_executors, gpu_executors):
+
+        if 'english_to' not in fname:
+            return
+
         if num_replicas < 0:
             return
 
+        if len(function_locations[fname]) >= 14:
+            return
+
+        if len(function_locations[fname]) + num_replicas >= 14:
+            num_replicas = 14 - len(function_locations[fname])
+
         existing_replicas = function_locations[fname]
-        candiate_nodes = executors.difference(existing_replicas)
+
+        msg = PinFunction()
+        msg.name = fname
+        msg.response_address = self.ip
+
+        if 'gpu' in fname:
+            msg.batching = True
+
+        if 'gpu' in fname:
+            candidate_nodes = gpu_executors.difference(existing_replicas)
+
+            for key in function_locations:
+                if 'gpu' in key:
+                    for location in function_locations[key]:
+                        candidate_nodes.discard(location)
+        else:
+            candidate_nodes = cpu_executors.difference(existing_replicas)
 
         for _ in range(num_replicas):
-            if len(candiate_nodes) == 0:
+            if len(candidate_nodes) == 0:
                 continue
 
-            ip, tid = random.sample(candiate_nodes, 1)[0]
-
-            msg = PinFunction()
-            msg.name = fname
-            msg.response_address = self.ip
-
+            ip, tid = random.sample(candidate_nodes, 1)[0]
             send_message(self.context, msg.SerializeToString(),
                          get_executor_pin_address(ip, tid))
 
@@ -61,7 +82,7 @@ class DefaultScaler(BaseScaler):
             except zmq.ZMQError:
                 logging.error('Pin operation to %s:%d timed out for %s.' %
                               (ip, tid, fname))
-                candiate_nodes.remove((ip, tid))
+                candidate_nodes.remove((ip, tid))
                 continue
 
             if response.success:
@@ -72,7 +93,7 @@ class DefaultScaler(BaseScaler):
                 # The pin operation was rejected, remove node and try again.
                 logging.error('Node %s:%d rejected pin for %s.'
                               % (ip, tid, fname))
-            candiate_nodes.remove((ip, tid))
+            candidate_nodes.remove((ip, tid))
 
     def dereplicate_function(self, fname, num_replicas, function_locations):
         if num_replicas < 2:

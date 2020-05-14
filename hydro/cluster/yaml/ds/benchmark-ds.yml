@@ -32,7 +32,7 @@ spec:
       hostNetwork: true
       containers:
       - name: benchmark-1
-        image: vsreekanti/cloudburst-ps
+        image: vsreekanti/cloudburst-video
         env: 
         - name: ROLE
           value: benchmark
@@ -43,15 +43,15 @@ spec:
         - name: MGMT_IP
           value: ""
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
           value: master
       - name: benchmark-2
-        image: vsreekanti/cloudburst-ps
+        image: vsreekanti/cloudburst-video
         env: 
         - name: ROLE
           value: benchmark
@@ -62,15 +62,15 @@ spec:
         - name: MGMT_IP
           value: ""
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
           value: master
       - name: benchmark-3
-        image: vsreekanti/cloudburst-ps
+        image: vsreekanti/cloudburst-video
         env: 
         - name: ROLE
           value: benchmark
@@ -81,15 +81,15 @@ spec:
         - name: MGMT_IP
           value: ""
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
           value: master
       - name: benchmark-4
-        image: vsreekanti/cloudburst-ps
+        image: vsreekanti/cloudburst-video
         env: 
         - name: ROLE
           value: benchmark
@@ -100,9 +100,9 @@ spec:
         - name: MGMT_IP
           value: ""
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: osdi-experiments
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
