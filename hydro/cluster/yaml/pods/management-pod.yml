@@ -33,9 +33,9 @@ spec:
     - name: HYDRO_CLUSTER_NAME
       value: CLUSTER_NAME
     - name: REPO_ORG
-      value: vsreekanti
+      value: hydro-project
     - name: REPO_BRANCH
-      value: osdi-experiments
+      value: master
     - name: ANNA_REPO_ORG
       value: hydro-project
     - name: ANNA_REPO_BRANCH

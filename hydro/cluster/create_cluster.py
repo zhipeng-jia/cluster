@@ -158,13 +158,6 @@ def create_cluster(mem_count, ebs_count, func_count, gpu_count, sched_count,
         'IpRanges': [{
             'CidrIp': '0.0.0.0/0'
         }]
-    }, {
-        'FromPort': 4700,
-        'IpProtocol': 'tcp',
-        'ToPort': 4703,
-        'IpRanges': [{
-            'CidrIp': '0.0.0.0/0'
-        }]
     }]
 
     ec2_client.authorize_security_group_ingress(GroupId=sg['GroupId'],

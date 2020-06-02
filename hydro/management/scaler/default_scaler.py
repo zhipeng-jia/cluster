@@ -1,4 +1,4 @@
-#  Copyright 14gc19 U.C. Berkeley RISE Lab
+#  Copyright 2019 U.C. Berkeley RISE Lab
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -37,27 +37,14 @@ class DefaultScaler(BaseScaler):
     def replicate_function(self, fname, num_replicas, function_locations,
                            cpu_executors, gpu_executors):
 
-        if 'english_to' not in fname:
-            return
-
-        if num_replicas < 0:
-            return
-
-        if len(function_locations[fname]) >= 14:
-            return
-
-        if len(function_locations[fname]) + num_replicas >= 14:
-            num_replicas = 14 - len(function_locations[fname])
-
         existing_replicas = function_locations[fname]
 
         msg = PinFunction()
         msg.name = fname
         msg.response_address = self.ip
 
-        if 'gpu' in fname:
-            msg.batching = True
-
+        # TODO: Add proper support for autoscaling GPU instances and for
+        # checking whether batching is enabled.
         if 'gpu' in fname:
             candidate_nodes = gpu_executors.difference(existing_replicas)
 

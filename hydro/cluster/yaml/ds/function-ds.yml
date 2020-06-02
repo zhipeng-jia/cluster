@@ -38,7 +38,11 @@ spec:
       hostIPC: true
       containers:
       - name: function-1
-        image: vsreekanti/cloudburst-nmt
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2G"
+        image: hydroproject/cloudburst
         imagePullPolicy: Always
         env:
         - name: ROUTE_ADDR
@@ -52,20 +56,22 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: vsreekanti
+          value: hydro-project
         - name: REPO_BRANCH
-          value: osdi-experiments
+          value: master
         - name: ANNA_REPO_ORG
-          value: vsreekanti
+          value: hydro-project
         - name: ANNA_REPO_BRANCH
-          value: osdi-experiments
-        - name: OMP_NUM_THREADS
-          value: "10"
+          value: master
         volumeMounts:
         - mountPath: /requests
           name: ipc
       - name: function-2
-        image: vsreekanti/cloudburst-nmt
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2G"
+        image: hydroproject/cloudburst
         imagePullPolicy: Always
         env:
         - name: ROUTE_ADDR
@@ -79,47 +85,45 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: vsreekanti
+          value: hydro-project
         - name: REPO_BRANCH
-          value: osdi-experiments
+          value: master
         - name: ANNA_REPO_ORG
-          value: vsreekanti
+          value: hydro-project
         - name: ANNA_REPO_BRANCH
-          value: osdi-experiments
-        - name: OMP_NUM_THREADS
-          value: "10"
+          value: master
         volumeMounts:
         - mountPath: /requests
           name: ipc
-#       - name: function-3
-#         image: vsreekanti/cloudburst-nmt
-#         imagePullPolicy: Always
-#         resources:
-#           limits:
-#             cpu: 5
-#             memory: "8G"
-#         env:
-#         - name: ROUTE_ADDR
-#           value: ROUTE_ADDR_DUMMY
-#         - name: MGMT_IP
-#           value: MGMT_IP_DUMMY
-#         - name: SCHED_IPS
-#           value: SCHED_IPS_DUMMY
-#         - name: THREAD_ID
-#           value: "2"
-#         - name: ROLE
-#           value: executor
-#         - name: REPO_ORG
-#           value: vsreekanti
-#         - name: REPO_BRANCH
-#           value: osdi-experiments
-#         - name: ANNA_REPO_ORG
-#           value: vsreekanti
-#         - name: ANNA_REPO_BRANCH
-#           value: osdi-experiments
-#         volumeMounts:
-#         - mountPath: /requests
-#           name: ipc
+      - name: function-3
+        image: hydroproject/cloudburst
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2G"
+        env:
+        - name: ROUTE_ADDR
+          value: ROUTE_ADDR_DUMMY
+        - name: MGMT_IP
+          value: MGMT_IP_DUMMY
+        - name: SCHED_IPS
+          value: SCHED_IPS_DUMMY
+        - name: THREAD_ID
+          value: "2"
+        - name: ROLE
+          value: executor
+        - name: REPO_ORG
+          value: hydro-project
+        - name: REPO_BRANCH
+          value: master
+        - name: ANNA_REPO_ORG
+          value: hydro-project
+        - name: ANNA_REPO_BRANCH
+          value: master
+        volumeMounts:
+        - mountPath: /requests
+          name: ipc
       - name: cache-container
         image: hydroproject/anna-cache
         imagePullPolicy: Always
@@ -135,7 +139,7 @@ spec:
         - name: REPO_ORG
           value: hydro-project
         - name: REPO_BRANCH
-          value: osdi-experiments
+          value: master
         volumeMounts:
         - mountPath: /requests
           name: ipc

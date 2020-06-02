@@ -38,7 +38,7 @@ spec:
       hostIPC: true
       containers:
       - name: function-1
-        image: vsreekanti/cloudburst-gpu-nmt
+        image: hydroproject/cloudburst-gpu
         imagePullPolicy: Always
         resources:
           limits:
@@ -55,13 +55,13 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: vsreekanti
+          value: hydro-project
         - name: REPO_BRANCH
-          value: osdi-experiments
+          value: master
         - name: ANNA_REPO_ORG
-          value: vsreekanti
+          value: hydro-project
         - name: ANNA_REPO_BRANCH
-          value: osdi-experiments
+          value: master
         - name: EXECUTOR_TYPE
           value: "GPU"
         volumeMounts:

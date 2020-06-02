@@ -71,7 +71,7 @@ def run(self_ip):
     statistics_socket.bind('tcp://*:7006')
 
     pin_accept_socket = context.socket(zmq.PULL)
-    pin_accept_socket.setsockopt(zmq.RCVTIMEO, 30000)
+    pin_accept_socket.setsockopt(zmq.RCVTIMEO, 10000) # 10 seconds.
     pin_accept_socket.bind('tcp://*:' + PIN_ACCEPT_PORT)
 
     poller = zmq.Poller()
@@ -158,6 +158,9 @@ def run(self_ip):
 
         if (function_status_socket in socks and
                 socks[function_status_socket] == zmq.POLLIN):
+            # Dequeue all available ThreadStatus messages rather than doing
+            # them one at a time---this prevents starvation if other operations
+            # (e.g., pin) take a long time.
             while True:
                 status = ThreadStatus()
                 try:
@@ -271,7 +274,7 @@ def run(self_ip):
             policy.replica_policy(function_frequencies, function_runtimes,
                                   dag_runtimes, executor_statuses,
                                   arrival_times)
-            # policy.executor_policy(executor_statuses, departing_executors)
+            policy.executor_policy(executor_statuses, departing_executors)
 
             # Clears all metadata that was passed in for this epoch.
             function_runtimes.clear()
