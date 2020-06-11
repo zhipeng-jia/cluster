@@ -70,6 +70,9 @@ def run(self_ip):
     statistics_socket = context.socket(zmq.PULL)
     statistics_socket.bind('tcp://*:7006')
 
+    list_caches_socket = context.socket(zmq.REP)
+    list_caches_socket.bind('tcp://*:7007')
+
     pin_accept_socket = context.socket(zmq.PULL)
     pin_accept_socket.setsockopt(zmq.RCVTIMEO, 10000) # 10 seconds.
     pin_accept_socket.bind('tcp://*:' + PIN_ACCEPT_PORT)
@@ -82,6 +85,7 @@ def run(self_ip):
     poller.register(list_schedulers_socket, zmq.POLLIN)
     poller.register(executor_depart_socket, zmq.POLLIN)
     poller.register(statistics_socket, zmq.POLLIN)
+    poller.register(list_caches_socket, zmq.POLLIN)
 
     add_push_socket = context.socket(zmq.PUSH)
     add_push_socket.connect('ipc:///tmp/node_add')
@@ -264,6 +268,20 @@ def run(self_ip):
                 for rt in dstats.runtimes:
                     dag_runtimes[dname].append(rt)
 
+        if (list_caches_socket in socks and socks[list_caches_socket] ==
+                zmq.POLLIN):
+            list_caches_socket.recv_string() # Ignore this message.
+            response = StringSet()
+
+            ips = StringSet()
+            for ip in util.get_pod_ips(client, 'role=scheduler'):
+                ips.keys.append(ip)
+
+            for ip in util.get_pod_ips(client, 'role=function'):
+                ips.keys.append(ip)
+
+            list_caches_socket.send(ips.SerializeToString())
+
         end = time.time()
         if end - start > REPORT_PERIOD:
             logging.info('Checking hash ring...')
@@ -271,10 +289,10 @@ def run(self_ip):
 
             # Invoke the configured policy to check system load and respond
             # appropriately.
-            policy.replica_policy(function_frequencies, function_runtimes,
-                                  dag_runtimes, executor_statuses,
-                                  arrival_times)
-            policy.executor_policy(executor_statuses, departing_executors)
+            # policy.replica_policy(function_frequencies, function_runtimes,
+            #                       dag_runtimes, executor_statuses,
+            #                       arrival_times)
+            # policy.executor_policy(executor_statuses, departing_executors)
 
             # Clears all metadata that was passed in for this epoch.
             function_runtimes.clear()
