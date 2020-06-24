@@ -56,9 +56,9 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: no-aft
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
@@ -85,9 +85,9 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: no-aft
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
@@ -114,9 +114,9 @@ spec:
         - name: ROLE
           value: executor
         - name: REPO_ORG
-          value: hydro-project
+          value: vsreekanti
         - name: REPO_BRANCH
-          value: master
+          value: no-aft
         - name: ANNA_REPO_ORG
           value: hydro-project
         - name: ANNA_REPO_BRANCH
@@ -140,6 +140,8 @@ spec:
           value: hydro-project
         - name: REPO_BRANCH
           value: master
+        - name: ROLE
+          value: aft
         volumeMounts:
         - mountPath: /requests
           name: ipc
