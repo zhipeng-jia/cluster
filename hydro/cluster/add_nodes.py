@@ -116,10 +116,8 @@ def add_nodes(client, apps_client, cfile, kinds, counts, create=False,
                                       '/hydro/anna/conf/', cname)
             else:
                 if cname == 'cache-container':
-                    # For the cache pods, we also copy the conf into the cache
-                    # conf directory.
-                    util.copy_file_to_pod(client, 'anna-config.yml', pname,
-                                          '/hydro/anna-cache/conf/', cname)
+                    # For the cache pods, we usually copy the conf into the cache
+                    # conf directory but we skip this for AFT.
                     pass
 
         os.system('rm ./anna-config.yml')
