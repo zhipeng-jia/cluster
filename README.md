@@ -3,6 +3,9 @@
 [![Build Status](https://travis-ci.com/hydro-project/cluster.svg?branch=master)](https://travis-ci.com/hydro-project/cluster)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+### Experimental Branch
+
+The `aft-support` branch has experimental support for Cloudburst with AFT transaction support. You can read more about the motivations and features for this integration in [Section 3.3 of this dissertation](https://www.vikrams.io/papers/thesis.pdf).
 
 This repository contains the cluster creation and management components of the Hydro stack. 
 
