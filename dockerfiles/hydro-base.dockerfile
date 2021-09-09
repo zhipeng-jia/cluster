@@ -18,12 +18,14 @@ MAINTAINER Vikram Sreekanti <vsreekanti@gmail.com> version: 0.1
 
 USER root
 
+ARG NUM_JOBS=16
+
 # Install all apt-packages that are shared across the whole project.
 RUN apt-get update
 RUN apt-get install -y build-essential autoconf automake libtool curl make \
       unzip pkg-config wget curl git vim jq software-properties-common \
       libzmq3-dev git gcc libpq-dev libssl-dev \
-      openssl libffi-dev zlib1g-dev net-tools
+      openssl libffi-dev zlib1g-dev net-tools dnsutils
 
 # Install clang-5 and other related C++ things; this uses --force-yes because 
 # of some odd disk space warning that I can't get rid of.
@@ -59,8 +61,8 @@ RUN unzip protobuf-all-3.5.1.zip
 WORKDIR /protobuf-3.5.1/
 RUN ./autogen.sh
 RUN ./configure CXX=clang++ CXXFLAGS='-std=c++11 -stdlib=libc++ -O3 -g'
-RUN make -j4
-RUN make check -j4
+RUN make -j $NUM_JOBS
+RUN make check -j $NUM_JOBS
 RUN make install
 RUN ldconfig
 
@@ -68,15 +70,19 @@ RUN ldconfig
 WORKDIR /
 RUN rm -rf protobuf-3.5.1 protobuf-all-3.5.1.zip
 
+RUN apt-get clean
+
 # Create and populate Hydro project context.
 RUN mkdir /hydro
 ENV HYDRO_HOME /hydro
 WORKDIR /hydro
 
+ARG repo_org=zhipeng-jia
+
 # Clone all the Hydro project repos here.
-RUN git clone --recurse-submodules https://github.com/hydro-project/anna
-RUN git clone --recurse-submodules https://github.com/hydro-project/anna-cache
-RUN git clone --recurse-submodules https://github.com/hydro-project/cloudburst
-RUN git clone --recurse-submodules https://github.com/hydro-project/cluster
+RUN git clone --recurse-submodules https://github.com/$repo_org/anna
+RUN git clone --recurse-submodules https://github.com/$repo_org/anna-cache
+RUN git clone --recurse-submodules https://github.com/$repo_org/cloudburst
+RUN git clone --recurse-submodules https://github.com/$repo_org/cluster
 
 WORKDIR /
